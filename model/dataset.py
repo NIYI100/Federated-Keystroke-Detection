@@ -11,7 +11,9 @@ class KeystrokeDataset(Dataset):
     Each 1D Tensor is one keystroke with  start time, duration and keycode as datapoints
     """
 
-    def __init__(self, data: List[Tensor], labels: Tensor):
+    def __init__(self, data: List[Tensor] = None, labels: Tensor = Tensor()):
+        if data is None:
+            data = []
         self.data: List[Tensor] = data
         self.labels: Tensor = labels
 
