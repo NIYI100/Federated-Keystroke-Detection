@@ -1,0 +1,5 @@
+# Python package requirements
+pandas
+dask
+# if you get an error during bertopic pip install try: conda install -c conda-forge hdbscan
+
