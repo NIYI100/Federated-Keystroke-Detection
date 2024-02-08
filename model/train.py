@@ -10,6 +10,9 @@ import os
 import json
 from datetime import datetime
 
+hidden_dim = 32
+lr = 2e-5
+batch_size = 128
 model: KeystrokeClassificator
 device: Device
 loss_function: nn.BCELoss
@@ -18,20 +21,16 @@ dataset: KeystrokeDataset
 train_data: Subset[KeystrokeDataset]
 val_data: Subset[KeystrokeDataset]
 batch_size: int
-timestamp = datetime
+timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+prefix: str = f"./training_output/{timestamp}"
 
 
 def setup():
-    global model, device, loss_function, optimizer, train_data, val_data, batch_size, timestamp, dataset
-    """ Setup Network, prepare training"""
-    hidden_dim = 32
-    lr = 2e-5
-    batch_size = 128
-
-    device_str = "cuda" if torch.cuda.is_available() else "cpu"
-    device = torch.device(device_str)
-    model = KeystrokeClassificator(device=device)
-    model.to(device)
+    global model, device, loss_function, optimizer, train_data, val_data, \
+        batch_size, timestamp, dataset, hidden_dim, lr, prefix
+    # Setup Network, prepare training
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = KeystrokeClassificator(input_dim=3, hidden_dim=hidden_dim, device=device)
 
     loss_function = nn.BCELoss()
 
@@ -39,13 +38,13 @@ def setup():
                                  lr=lr,
                                  betas=(0.9, 0.98),
                                  eps=1.0e-9)
+    # load dataset
     data_path = "../dataset/test.pt"
     dataset = torch.load(data_path)
     train_data, val_data = random_split(dataset, [0.8, 0.2])
     num_batches = int(len(train_data) / batch_size)
 
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    prefix = f"./training_log/{timestamp}"
+    # save training info
     if not os.path.exists(prefix):
         os.makedirs(prefix)
 
@@ -60,11 +59,11 @@ def setup():
 
     print(json.dumps(training_info, indent=2))
     with open(f"{prefix}/training_info.json ", "w") as f:
-        pass
         json.dump(training_info, f, indent=2)
 
 
 def train_epoch():
+    model.train(True)
     for i, data in enumerate(train_data):
         keystroke_series: Tensor
         label: Tensor
@@ -76,6 +75,8 @@ def train_epoch():
         loss = loss_function(output, label)
         loss.backward()
         optimizer.step()
+    model_path = f'{prefix}/model_last.pth'
+    torch.save(model.state_dict(), model_path)
 
 
 if __name__ == "__main__":
