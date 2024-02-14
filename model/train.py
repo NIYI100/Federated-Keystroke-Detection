@@ -42,8 +42,8 @@ def setup():
     data_path = "../dataset/test.pt"
     dataset = torch.load(data_path)
 
+    # workaround for train_data, val_data = random_split(dataset, [0.8, 0.2])
     total_size = len(dataset)
-    print(total_size)
     # Check if the dataset is empty
     if total_size == 0:
         raise ValueError("The dataset is empty. Cannot perform a split.")
