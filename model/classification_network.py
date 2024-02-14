@@ -58,6 +58,6 @@ class TimeEncoder(nn.Module):
         self.register_buffer('pe', pe)
 
     def forward(self, data: Tensor, time_stamps: Tensor) -> Tensor:
-        time_stamps = torch.round(torch.mul(time_stamps, 1000)).int()  # TODO Just Testing
+        time_stamps = torch.round(torch.mul(time_stamps, 1000)).long()  # TODO Just Testing
         data = data + self.pe[time_stamps]
         return data
