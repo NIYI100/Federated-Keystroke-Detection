@@ -41,7 +41,17 @@ def setup():
     # load dataset
     data_path = "../dataset/test.pt"
     dataset = torch.load(data_path)
-    train_data, val_data = random_split(dataset, [0.8, 0.2])
+
+    total_size = len(dataset)
+    print(total_size)
+    # Check if the dataset is empty
+    if total_size == 0:
+        raise ValueError("The dataset is empty. Cannot perform a split.")
+
+    train_size = int(0.8 * total_size)
+    val_size = total_size - train_size
+
+    train_data, val_data = random_split(dataset, [train_size, val_size])
     num_batches = int(len(train_data) / batch_size)
 
     # save training info
@@ -50,6 +60,7 @@ def setup():
 
     training_info = {
         'dataset': data_path,
+        'Dataset size': len(dataset),
         'loss_function': loss_function._get_name(),
         'optimizer': str(optimizer),
         'batch_size': batch_size,
@@ -75,6 +86,8 @@ def train_epoch():
         loss = loss_function(output, label)
         loss.backward()
         optimizer.step()
+        if i % 100 == 0:
+            print(f"{i}/{len(train_data)}")
     model_path = f'{prefix}/model_last.pth'
     torch.save(model.state_dict(), model_path)
 
