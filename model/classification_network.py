@@ -24,12 +24,13 @@ class KeystrokeClassificator(nn.Module):
     def forward(self, data: Tensor):
         relative_timestamps, timeless_data = data[:, 0], data[:, 1:]
         preprocessed = torch.empty((0, self.hidden_dim))
-        preprocessed.to(self.device)
+        preprocessed = preprocessed.to(self.device)
         for keystroke in timeless_data:
-            keystroke.to(self.device)
+            keystroke = keystroke.to(self.device)
             key_preprocessed = F.relu(self.linear(keystroke))
+            key_preprocessed = key_preprocessed.to(self.device)
             preprocessed = torch.cat((preprocessed, key_preprocessed.unsqueeze(0)), dim=0)
-        preprocessed.to(self.device)
+        preprocessed = preprocessed.to(self.device)
         time_encoded_data = self.time_encoder(preprocessed, relative_timestamps)
         cls_data = self.add_classifier_token(time_encoded_data)
         embedded_data = self.encoder(cls_data)

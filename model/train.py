@@ -29,7 +29,7 @@ def setup():
     global model, device, loss_function, optimizer, train_data, val_data, \
         batch_size, timestamp, dataset, hidden_dim, lr, prefix
     # Setup Network, prepare training
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = KeystrokeClassificator(input_dim=3, hidden_dim=hidden_dim, device=device)
 
     loss_function = nn.BCELoss()
@@ -39,7 +39,7 @@ def setup():
                                  betas=(0.9, 0.98),
                                  eps=1.0e-9)
     # load dataset
-    data_path = "../dataset/test.pt"
+    data_path = "dataset/test.pt"
     dataset = torch.load(data_path)
 
     # workaround for train_data, val_data = random_split(dataset, [0.8, 0.2])
@@ -74,15 +74,17 @@ def setup():
 
 
 def train_epoch():
+    model.to(device)
     model.train(True)
     for i, data in enumerate(train_data):
         keystroke_series: Tensor
         label: Tensor
         keystroke_series, label = data
-        keystroke_series.to(device)
-        label.to(device)
+        keystroke_series = keystroke_series.to(device)
+        label = label.to(device)
         optimizer.zero_grad()
         output = model(keystroke_series)
+        output = output.to(device)
         loss = loss_function(output, label)
         loss.backward()
         optimizer.step()
