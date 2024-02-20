@@ -27,4 +27,4 @@ COPY app /app
 WORKDIR /app
 
 # Set the entrypoint
-ENTRYPOINT [ "python3", "main.py" ]
+ENTRYPOINT [ "python3", "test.py" ]
