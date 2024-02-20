@@ -33,7 +33,9 @@ class KeystrokeClassificator(nn.Module):
         preprocessed = preprocessed.to(self.device)
         time_encoded_data = self.time_encoder(preprocessed, relative_timestamps)
         cls_data = self.add_classifier_token(time_encoded_data)
+        cls_data = cls_data.unsqueeze(1) # unsqueeze data because pytorch 1.10.0 expects batched data
         embedded_data = self.encoder(cls_data)
+        embedded_data = embedded_data.squeeze(1)
         cls_out = embedded_data[0]  # do the classification only on the embedded classification token
         out = F.sigmoid(self.classificator(cls_out))
         return out
