@@ -15,19 +15,22 @@ class KeystrokeClassificator(nn.Module):
         else:
             self.device = device
 
-        self.linear = nn.Linear(input_dim - 1, hidden_dim)
-
+        self.linear = nn.Linear(input_dim - 1, hidden_dim, device=self.device)
         self.time_encoder = TimeEncoder(d_model=hidden_dim, max_len=5000, device=self.device)
-        encoder_layer = nn.TransformerEncoderLayer(d_model=hidden_dim, nhead=8)
+        encoder_layer = nn.TransformerEncoderLayer(d_model=hidden_dim, nhead=8, device=self.device)
         self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
-        self.classificator = nn.Linear(hidden_dim, 1)
+        self.classificator = nn.Linear(hidden_dim, 1, device=self.device)
 
     def forward(self, data: Tensor):
         relative_timestamps, timeless_data = data[:, 0], data[:, 1:]
         preprocessed = torch.empty((0, self.hidden_dim))
+        preprocessed = preprocessed.to(self.device)
         for keystroke in timeless_data:
+            keystroke = keystroke.to(self.device)
             key_preprocessed = F.relu(self.linear(keystroke))
+            key_preprocessed = key_preprocessed.to(self.device)
             preprocessed = torch.cat((preprocessed, key_preprocessed.unsqueeze(0)), dim=0)
+        preprocessed = preprocessed.to(self.device)
         time_encoded_data = self.time_encoder(preprocessed, relative_timestamps)
         cls_data = self.add_classifier_token(time_encoded_data)
         embedded_data = self.encoder(cls_data)
@@ -59,7 +62,7 @@ class TimeEncoder(nn.Module):
         self.register_buffer('pe', pe)
 
     def forward(self, data: Tensor, time_stamps: Tensor) -> Tensor:
-        time_stamps = torch.round(torch.mul(time_stamps, 1000)).int()  # TODO Just Testing
-        addition = self.pe[time_stamps]
-        data = data + addition
+        time_stamps = torch.round(torch.mul(time_stamps, 1000)).long()  # TODO Just Testing
+        time_stamps.to(self.device)
+        data = data + self.pe[time_stamps]
         return data
