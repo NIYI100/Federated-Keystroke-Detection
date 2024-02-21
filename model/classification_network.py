@@ -8,25 +8,34 @@ import math
 class KeystrokeClassificator(nn.Module):
     def __init__(self, input_dim=3, hidden_dim=32, device=None):
         super(KeystrokeClassificator, self).__init__()
+        self.hidden_dim = hidden_dim
         if device is None:
             device_str = "cuda" if torch.cuda.is_available() else "cpu"
             self.device = torch.device(device_str)
         else:
             self.device = device
 
-        self.linear = nn.Linear(input_dim, hidden_dim)
-
+        self.linear = nn.Linear(input_dim - 1, hidden_dim, device=self.device)
         self.time_encoder = TimeEncoder(d_model=hidden_dim, max_len=5000, device=self.device)
-        encoder_layer = nn.TransformerEncoderLayer(d_model=hidden_dim, nhead=8)
+        encoder_layer = nn.TransformerEncoderLayer(d_model=hidden_dim, nhead=8, device=self.device)
         self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
-        self.classificator = nn.Linear(hidden_dim, 1)
+        self.classificator = nn.Linear(hidden_dim, 1, device=self.device)
 
     def forward(self, data: Tensor):
         relative_timestamps, timeless_data = data[:, 0], data[:, 1:]
-        preprocessed = F.relu(self.linear(timeless_data))
+        preprocessed = torch.empty((0, self.hidden_dim))
+        preprocessed = preprocessed.to(self.device)
+        for keystroke in timeless_data:
+            keystroke = keystroke.to(self.device)
+            key_preprocessed = F.relu(self.linear(keystroke))
+            key_preprocessed = key_preprocessed.to(self.device)
+            preprocessed = torch.cat((preprocessed, key_preprocessed.unsqueeze(0)), dim=0)
+        preprocessed = preprocessed.to(self.device)
         time_encoded_data = self.time_encoder(preprocessed, relative_timestamps)
         cls_data = self.add_classifier_token(time_encoded_data)
+        cls_data = cls_data.unsqueeze(1) # unsqueeze data because pytorch 1.10.0 expects batched data
         embedded_data = self.encoder(cls_data)
+        embedded_data = embedded_data.squeeze(1)
         cls_out = embedded_data[0]  # do the classification only on the embedded classification token
         out = F.sigmoid(self.classificator(cls_out))
         return out
@@ -55,5 +64,7 @@ class TimeEncoder(nn.Module):
         self.register_buffer('pe', pe)
 
     def forward(self, data: Tensor, time_stamps: Tensor) -> Tensor:
+        time_stamps = torch.round(torch.mul(time_stamps, 1000)).long()  # TODO Just Testing
+        time_stamps.to(self.device)
         data = data + self.pe[time_stamps]
-        return self.dropout(data)
+        return data
