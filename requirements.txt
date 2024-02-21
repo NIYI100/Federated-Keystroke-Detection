@@ -2,5 +2,6 @@
 pandas
 dask
 torch
+pyarrow
 # if you get an error during bertopic pip install try: conda install -c conda-forge hdbscan
 
