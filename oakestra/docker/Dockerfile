@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:18.04
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -7,24 +7,27 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y \
         git \
+        python3.6 \
         python3-pip \
-        python3-dev \
-        python3-opencv \
-        libglib2.0-0
-# Install any python packages you need
-COPY requirements.txt requirements.txt
-
-RUN python3 -m pip install -r requirements.txt
+        libomp-dev
 
 # Upgrade pip
 RUN python3 -m pip install --upgrade pip
 
+# Install any python packages you need
+COPY oakestra/docker/requirements.txt requirements.txt
+
+RUN python3 -m pip install -r requirements.txt
+
 # Install PyTorch and torchvision
-RUN pip3 install torch torchvision torchaudio -f https://download.pytorch.org/whl/cu111/torch_stable.html
+#COPY Nvidia_Jetson/setup_pytorch.sh setup_pytorch.sh
+#RUN setup_pytorch.sh
 
 # Set the working directory
-COPY app /app
+COPY model/ /app/model
+COPY dataset/ /app/dataset
 WORKDIR /app
 
+ENV PYTHONPATH="/app"
 # Set the entrypoint
-ENTRYPOINT [ "python3", "test.py" ]
+ENTRYPOINT [ "python3", "model/train.py" ]
