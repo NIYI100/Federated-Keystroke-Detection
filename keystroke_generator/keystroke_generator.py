@@ -60,11 +60,11 @@ class KeystrokeGenerator:
                     resolve_shift()
                     shift_idx = -1
 
-            if (idx > 1 and len(output[idx - 1]) > 1 and vk_dict[c.lower] == output[idx - 1][2]
+            if (idx > 1 and len(output[idx - 1]) > 1 and vk_dict[c.lower()] == output[idx - 1][2]
                     and now <= output[idx - 1][0] + output[idx - 1][1]):
                 now = output[idx - 1][0] + output[idx - 1][1] + self.get_random_number(self.base_press_deviation,
                                                                                        self.base_press_deviation)
-            output.append([now, hold_latency, vk_dict[c]])
+            output.append([now, hold_latency, vk_dict[c.lower()]])
             now += press_latency
             idx += 1
 
