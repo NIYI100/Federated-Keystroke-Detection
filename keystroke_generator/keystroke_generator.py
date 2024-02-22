@@ -32,8 +32,7 @@ class KeystrokeGenerator:
         Generates keystrokes for a given string. Note: only works properly with characters present on a standard US keyboard.
         :param string: the input string
         :return: a tensor of shape `(x, 3)`, where `x` is the length of `string` plus any necessary modifier keystrokes
-        (shift, ctrl, alt), and the columns are key press timestamp (ms), key hold time (ms) and Windows virtual key
-        code
+        (shift, ctrl, alt), and the columns are key press timestamp (ms), key hold time (ms) and JavaScript key code
         """
         now = 0
         idx = 0
