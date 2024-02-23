@@ -47,14 +47,15 @@ class KeystrokeGenerator:
 
         for c in string:
             hold_latency = self.get_random_number(self.base_hold_latency, self.base_hold_deviation)
-            press_latency = self.get_random_number(self.base_press_latency, self.base_press_deviation)
+            press_latency = self.get_random_number(self.base_press_latency, self.base_press_deviation, "log-normal")
             if c.isupper() or c in shift_chars:
                 if shift_idx == -1:
                     shift_idx = idx
                     output.append([now])
                     now += press_latency
                     idx += 1
-                    press_latency = self.get_random_number(self.base_press_latency, self.base_press_deviation)
+                    press_latency = self.get_random_number(self.base_press_latency, self.base_press_deviation,
+                                                           "log-normal")
             else:
                 if shift_idx != -1:
                     resolve_shift()
@@ -63,7 +64,8 @@ class KeystrokeGenerator:
             if (idx > 1 and len(output[idx - 1]) > 1 and vk_dict[c.lower()] == output[idx - 1][2]
                     and now <= output[idx - 1][0] + output[idx - 1][1]):
                 now = output[idx - 1][0] + output[idx - 1][1] + self.get_random_number(self.base_press_deviation,
-                                                                                       self.base_press_deviation)
+                                                                                       self.base_press_deviation,
+                                                                                       "log-normal")
             output.append([now, hold_latency, vk_dict[c.lower()]])
             now += press_latency
             idx += 1
@@ -72,11 +74,20 @@ class KeystrokeGenerator:
             resolve_shift()
         return Tensor(output).to(dtype=torch.int)
 
-    def get_random_number(self, mean: int, deviation: int) -> int:
-        number = int(self.rng.gauss(mean, deviation / 4))
-        while number not in range(mean - deviation, mean + deviation):
-            number = int(self.rng.gauss(mean, deviation / 4))
-        return number
+    def get_random_number(self, mean: int, deviation: int, distribution: str = "normal") -> int:
+        match distribution:
+            case "normal":
+                number = int(self.rng.gauss(mean, deviation / 4))
+                while number not in range(mean - deviation, mean + deviation):
+                    number = int(self.rng.gauss(mean, deviation / 4))
+                return number
+            case "log-normal":
+                mean /= 1000
+                deviation /= 1000
+                number = self.rng.lognormvariate(-32 / (125 * mean), 27 / (500 * deviation))
+                while number < mean - deviation or mean + 1 / (3 * deviation ** 0.5) < number:
+                    number = self.rng.lognormvariate(-32 / (125 * mean), 27 / (500 * deviation))
+                return int(number * 1000)
 
 
 if __name__ == '__main__':
