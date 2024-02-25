@@ -40,11 +40,11 @@ if __name__ == '__main__':
             while hold_deviation not in range(int(hold_latency * 0.375), int(hold_latency * 0.875)):
                 hold_deviation = int(rng.gauss(hold_latency * 0.75, hold_latency * 0.75 * 0.5 / 4))
 
-            press_latency = rng.lognormvariate(-1.6, 0.45)
+            press_latency = rng.lognormvariate(-1.8, 0.32)
             while (press_latency * 1000 < hold_latency * 0.8
                    or press_latency * 1000 < base_press_latency - base_press_deviation
                    or base_press_latency / 1000 + 1 / (3 * (base_press_deviation / 1000) ** 0.5) < press_latency):
-                press_latency = rng.lognormvariate(-1.6, 0.45)
+                press_latency = rng.lognormvariate(-1.8, 0.32)
             press_latency = int(press_latency * 1000)
 
             press_deviation = int(rng.gauss(press_latency * 0.75, press_latency * 0.75 * 0.5 / 4))
