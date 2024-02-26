@@ -26,8 +26,6 @@ if __name__ == '__main__':
     with open("../dataset/sentences.txt") as f:
         sentences = [w.removesuffix("\n") for w in f.readlines()]
 
-    kg = KeystrokeGenerator(rng=rng)
-
     for i in range(files):
         ds = KeystrokeDataset()
         for j in range(profiles):
