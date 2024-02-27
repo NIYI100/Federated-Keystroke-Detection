@@ -72,16 +72,15 @@ class KeystrokeGenerator:
 
         if shift_idx != -1:
             resolve_shift()
-        return Tensor(output).to(dtype=torch.int)
+        return Tensor(output).to(dtype=torch.float)
 
     def get_random_number(self, mean: int, deviation: int, distribution: str = "normal") -> int:
-        match distribution:
-            case "normal":
+        if distribution == "normal":
                 number = int(self.rng.gauss(mean, deviation / 4))
                 while number not in range(mean - deviation, mean + deviation):
                     number = int(self.rng.gauss(mean, deviation / 4))
                 return number
-            case "log-normal":
+        elif distribution == "log-normal":
                 mean /= 1000
                 deviation /= 1000
                 number = self.rng.lognormvariate(-32 / (125 * mean), 27 / (500 * deviation))

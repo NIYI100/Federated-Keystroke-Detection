@@ -8,6 +8,7 @@ import random
 
 import torch
 from tqdm import tqdm
+import os
 
 from keystroke_generator import KeystrokeGenerator
 from model.dataset import KeystrokeDataset
@@ -24,7 +25,7 @@ if __name__ == '__main__':
     rng = random.Random()
     prog_bar = tqdm(total=files * profiles, desc="Generating bot data")
     with open("../dataset/sentences.txt") as f:
-        sentences = [w.removesuffix("\n") for w in f.readlines()]
+        sentences = [w.replace("\n", "") for w in f.readlines()]
 
     for i in range(files):
         ds = KeystrokeDataset()
@@ -54,4 +55,8 @@ if __name__ == '__main__':
                 datapoint = kg.generate_keystroke(sentence)
                 ds.append_item(datapoint, torch.tensor(0))
             prog_bar.update()
-        torch.save(ds, f"../dataset/bot/{i}_bot_keystroke_dataset.pt")
+
+        path = "../dataset/bot"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        torch.save(ds, f"{path}/{i}_bot_keystroke_dataset.pt")
