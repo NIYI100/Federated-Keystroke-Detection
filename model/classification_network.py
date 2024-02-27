@@ -16,7 +16,7 @@ class KeystrokeClassificator(nn.Module):
             self.device = device
 
         self.linear = nn.Linear(input_dim - 1, hidden_dim, device=self.device)
-        self.time_encoder = TimeEncoder(d_model=hidden_dim, max_len=5000, device=self.device)
+        self.time_encoder = TimeEncoder(d_model=hidden_dim, max_len=50000, device=self.device)
         encoder_layer = nn.TransformerEncoderLayer(d_model=hidden_dim, nhead=8, device=self.device)
         self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
         self.classificator = nn.Linear(hidden_dim, 1, device=self.device)
@@ -64,7 +64,7 @@ class TimeEncoder(nn.Module):
         self.register_buffer('pe', pe)
 
     def forward(self, data: Tensor, time_stamps: Tensor) -> Tensor:
-        time_stamps = torch.round(torch.mul(time_stamps, 1000)).long()  # TODO Just Testing
+        time_stamps = time_stamps.long()
         time_stamps.to(self.device)
         data = data + self.pe[time_stamps]
         return data
