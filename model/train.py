@@ -56,7 +56,8 @@ def setup():
     global model, device, loss_function, optimizer, train_data, val_data, \
         batch_size, timestamp, dataset, hidden_dim, lr, prefix, data_folder_path
     # Setup Network, prepare training
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device_str = "cuda:0" if torch.cuda.is_available() else "cpu"
+    device = torch.device(device_str)
     model = KeystrokeClassificator(input_dim=3, hidden_dim=hidden_dim, device=device)
 
     loss_function = nn.BCELoss()
@@ -92,7 +93,8 @@ def setup():
         'optimizer': str(optimizer),
         'batch_size': batch_size,
         'timestamp': str(timestamp),
-        'train_batches': num_batches
+        'train_batches': num_batches,
+        'device': device_str
     }
 
     print(json.dumps(training_info, indent=2))
