@@ -167,7 +167,7 @@ _flutter.loader = null;
      */
     async _getNewServiceWorker(serviceWorkerRegistration, serviceWorkerVersion) {
       if (!serviceWorkerRegistration.active && (serviceWorkerRegistration.installing || serviceWorkerRegistration.waiting)) {
-        // No active web worker and we have installed or are installing
+        // No active frontend worker and we have installed or are installing
         // one for the first time. Simply wait for it to activate.
         console.debug("Installing/Activating first service worker.");
         return serviceWorkerRegistration.installing || serviceWorkerRegistration.waiting;
@@ -211,7 +211,7 @@ _flutter.loader = null;
   }
 
   /**
-   * Handles injecting the main Flutter web entrypoint (main.dart.js), and notifying
+   * Handles injecting the main Flutter frontend entrypoint (main.dart.js), and notifying
    * the user when Flutter is ready, through `didCreateEngineInitializer`.
    *
    * @see https://docs.flutter.dev/development/platform-integration/web/initialization
@@ -275,12 +275,12 @@ _flutter.loader = null;
 
     /**
      * Injects a script tag into the DOM, and configures this loader to be able to
-     * handle the "entrypoint loaded" notifications received from Flutter web.
+     * handle the "entrypoint loaded" notifications received from Flutter frontend.
      *
      * @param {string} entrypointUrl the URL of the script that will initialize
      *                 Flutter.
      * @param {Function} onEntrypointLoaded a callback that will be called when
-     *                   Flutter web notifies this object that the entrypoint is
+     *                   Flutter frontend notifies this object that the entrypoint is
      *                   loaded.
      * @returns {Promise | undefined} a Promise that resolves when the entrypoint
      *                                is loaded, or undefined if `onEntrypointLoaded`
@@ -334,13 +334,13 @@ _flutter.loader = null;
 
   /**
    * The public interface of _flutter.loader. Exposes two methods:
-   * * loadEntrypoint (which coordinates the default Flutter web loading procedure)
+   * * loadEntrypoint (which coordinates the default Flutter frontend loading procedure)
    * * didCreateEngineInitializer (which is called by Flutter to notify that its
    *                              Engine is ready to be initialized)
    */
   class FlutterLoader {
     /**
-     * Initializes the Flutter web app.
+     * Initializes the Flutter frontend app.
      * @param {*} options
      * @returns {Promise?} a (Deprecated) Promise that will eventually resolve
      *                     with an EngineInitializer, or will be rejected with
@@ -366,7 +366,7 @@ _flutter.loader = null;
       // (and dynamically imported from a module if not present).
       const entrypointLoader = new FlutterEntrypointLoader();
       entrypointLoader.setTrustedTypesPolicy(flutterTT.policy);
-      // Install the `didCreateEngineInitializer` listener where Flutter web expects it to be.
+      // Install the `didCreateEngineInitializer` listener where Flutter frontend expects it to be.
       this.didCreateEngineInitializer =
         entrypointLoader.didCreateEngineInitializer.bind(entrypointLoader);
       return entrypointLoader.loadEntrypoint(entrypoint);

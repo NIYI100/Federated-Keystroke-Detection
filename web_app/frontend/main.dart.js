@@ -31352,7 +31352,7 @@ m.d=r}else{if(A.ik(a)==="Meta"){r=$.d3()
 r=r===B.iS}else r=!1
 if(r){r=o|8
 m.d=r}else r=o}else r=o
-n=A.at(["type",a.type,"keymap","web","code",A.mU(a),"key",A.ik(a),"location",B.c.a6(a.location),"metaState",r,"keyCode",B.c.a6(a.keyCode)],t.N,t.z)
+n=A.at(["type",a.type,"keymap","frontend","code",A.mU(a),"key",A.ik(a),"location",B.c.a6(a.location),"metaState",r,"keyCode",B.c.a6(a.keyCode)],t.N,t.z)
 $.aK().is("flutter/keyevent",B.Q.bK(n),new A.a4e(s))}}
 A.a49.prototype={
 $1(a){this.a.JX(a)},
@@ -31367,7 +31367,7 @@ A.a4d.prototype={
 $0(){var s,r,q=this.a
 q.a.B(0,this.b)
 s=this.c.a
-r=A.at(["type","keyup","keymap","web","code",A.mU(s),"key",A.ik(s),"location",B.c.a6(s.location),"metaState",q.d,"keyCode",B.c.a6(s.keyCode)],t.N,t.z)
+r=A.at(["type","keyup","keymap","frontend","code",A.mU(s),"key",A.ik(s),"location",B.c.a6(s.location),"metaState",q.d,"keyCode",B.c.a6(s.keyCode)],t.N,t.z)
 $.aK().is("flutter/keyevent",B.Q.bK(r),A.aEF())},
 $S:0}
 A.a4e.prototype={
@@ -74746,7 +74746,7 @@ g=p
 l=A.ai(g)
 k=A.aJ(g)
 j=A.bn("during a framework-to-plugin message")
-A.cY(new A.bv(l,k,"flutter web plugins",j,null,!1))
+A.cY(new A.bv(l,k,"flutter frontend plugins",j,null,!1))
 o.push(5)
 s=4
 break
