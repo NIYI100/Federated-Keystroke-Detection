@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  app:
+    image: keystroke_detector
+    container_name: keystroke_detector
+    build:
+      context: ../../
+      dockerfile: oakestra/docker/Dockerfile
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - ../../web_app/frontend:/usr/local/apache2/htdocs/
