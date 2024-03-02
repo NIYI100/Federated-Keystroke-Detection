@@ -31593,17 +31593,10 @@ m.d=r}else{if(A.ir(a)==="Meta"){r=$.d4()
 r=r===B.iU}else r=!1
 if(r){r=o|8
 m.d=r}else r=o}else r=o
-<<<<<<< HEAD:web_app/frontend/main.dart.js
-n=A.at(["type",a.type,"keymap","frontend","code",A.mU(a),"key",A.ik(a),"location",B.c.a6(a.location),"metaState",r,"keyCode",B.c.a6(a.keyCode)],t.N,t.z)
-$.aK().is("flutter/keyevent",B.Q.bK(n),new A.a4e(s))}}
-A.a49.prototype={
-$1(a){this.a.JX(a)},
-=======
 n=A.at(["type",a.type,"keymap","web","code",A.mV(a),"key",A.ir(a),"location",B.d.a7(a.location),"metaState",r,"keyCode",B.d.a7(a.keyCode)],t.N,t.z)
 $.aK().iC("flutter/keyevent",B.Q.bN(n),new A.a4H(s))}}
 A.a4C.prototype={
 $1(a){this.a.JN(a)},
->>>>>>> web_app:web_app/web/main.dart.js
 $S:2}
 A.a4D.prototype={
 $1(a){this.a.JN(a)},
@@ -31615,13 +31608,8 @@ A.a4G.prototype={
 $0(){var s,r,q=this.a
 q.a.B(0,this.b)
 s=this.c.a
-<<<<<<< HEAD:web_app/frontend/main.dart.js
-r=A.at(["type","keyup","keymap","frontend","code",A.mU(s),"key",A.ik(s),"location",B.c.a6(s.location),"metaState",q.d,"keyCode",B.c.a6(s.keyCode)],t.N,t.z)
-$.aK().is("flutter/keyevent",B.Q.bK(r),A.aEF())},
-=======
 r=A.at(["type","keyup","keymap","web","code",A.mV(s),"key",A.ir(s),"location",B.d.a7(s.location),"metaState",q.d,"keyCode",B.d.a7(s.keyCode)],t.N,t.z)
 $.aK().iC("flutter/keyevent",B.Q.bN(r),A.aFn())},
->>>>>>> web_app:web_app/web/main.dart.js
 $S:0}
 A.a4H.prototype={
 $1(a){if(a==null)return
@@ -74935,15 +74923,9 @@ break
 case 3:q=2
 g=p
 l=A.ai(g)
-<<<<<<< HEAD:web_app/frontend/main.dart.js
-k=A.aJ(g)
-j=A.bn("during a framework-to-plugin message")
-A.cY(new A.bv(l,k,"flutter frontend plugins",j,null,!1))
-=======
 k=A.aO(g)
 j=A.bp("during a framework-to-plugin message")
 A.d_(new A.bz(l,k,"flutter web plugins",j,null,!1))
->>>>>>> web_app:web_app/web/main.dart.js
 o.push(5)
 s=4
 break
