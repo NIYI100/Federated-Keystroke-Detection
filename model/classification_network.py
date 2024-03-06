@@ -16,7 +16,7 @@ class KeystrokeClassificator(nn.Module):
             self.device = device
 
         self.linear = nn.Linear(input_dim - 1, hidden_dim, device=self.device)
-        self.time_encoder = TimeEncoder(d_model=hidden_dim, max_len=3000, device=self.device)
+        self.time_encoder = TimeEncoder(d_model=hidden_dim, max_len=251000, device=self.device)
         encoder_layer = nn.TransformerEncoderLayer(d_model=hidden_dim, nhead=8, device=self.device)
         self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
         self.classificator = nn.Linear(hidden_dim, 1, device=self.device)
