@@ -37,8 +37,10 @@ RUN mkdir /backend
 COPY web_app/backend/ /backend
 
 # Set the working directory
-COPY model/ /app/model
-COPY dataset/ /app/dataset
+COPY model/ /backend/model
+COPY dataset/ /backend/dataset
+COPY keystroke_generator/ /backend/keystroke_generator
+COPY training_output/ /backend/training_output
 
 ENV PYTHONPATH="/app"
 
