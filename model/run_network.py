@@ -1,10 +1,11 @@
 import torch
 from torch import Tensor
-from classification_network import KeystrokeClassificator
+from model.classification_network import KeystrokeClassificator
+import os
 
 model = KeystrokeClassificator()
 
-model_path = './training_output/20240208_094321/model_last.pth'
+model_path = os.path.dirname(__file__) + '/../training_output/20240227_140214/model_last.pth'
 model.load_state_dict(torch.load(model_path))
 model.eval()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

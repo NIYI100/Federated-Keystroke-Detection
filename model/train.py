@@ -20,7 +20,7 @@ lr = 2e-5
 batch_size: int = 128
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 prefix: str = f"./training_output/{timestamp}"
-data_folder_path = "../dataset/bot"
+data_folder_path = "./dataset/train"
 
 # setup trainings variables
 model: KeystrokeClassificator
