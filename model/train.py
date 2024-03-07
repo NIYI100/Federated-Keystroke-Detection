@@ -1,5 +1,6 @@
 from typing import List
 
+import numpy as np
 import torch
 import torch.nn as nn
 from torch import Tensor
@@ -205,6 +206,11 @@ def validate(epoch_index, train_loss):
         best_loss = avg_loss
         model_path = f'{prefix}/model_best.pth'
         torch.save(model.state_dict(), model_path)
+
+
+def calculate_averages(parameters: List[List[np.ndarray]]) -> List[np.ndarray]:
+    return [np.mean(np.array([model_param[i] for model_param in parameters]), axis=0) for i in
+            range(len(parameters[0]))]
 
 
 if __name__ == "__main__":
