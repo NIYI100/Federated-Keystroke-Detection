@@ -98,7 +98,7 @@ def setup():
     }
 
     print(json.dumps(training_info, indent=2))
-    with open(f"{prefix}/training_info.json ", "w") as f:
+    with open(f"{prefix}/training_info.json", "w") as f:
         json.dump(training_info, f, indent=2)
 
 
@@ -197,7 +197,7 @@ def validate(epoch_index, train_loss):
                  'loss_val': avg_loss
                  }
 
-    with open(f"{prefix}/epoch_{epoch_index}_data.json ", "w") as f:
+    with open(f"{prefix}/epoch_{epoch_index}_data.json", "w") as f:
         json.dump(json_data, f)
 
     # Save best model
