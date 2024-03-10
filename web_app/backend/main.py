@@ -4,6 +4,7 @@ from model.run_network import classify_sentence
 import json
 import pandas as pd
 import torch
+import flask
 
 app = Flask(__name__)
 
@@ -13,14 +14,17 @@ def training():
     query_json = request.json
     print(json.dumps(query_json, indent=1))
     # TODO: train local model
-    return "", 200
+    resp = flask.Response(response=query_json, status=200)
+    return resp
 
 
 @app.route('/classification', methods=['POST'])
 def classification():
     query_json = request.json
-    # print(json.dumps(query_json, indent=1))
+    query_json = [query_json[i] for i in query_json]
+    #print(json.dumps(query_json, indent=1))
     dask_df = pd.DataFrame(query_json)
+    #print(dask_df)
     dask_df['SEQUENCE_START_TIME'] = dask_df.groupby(['testSectionId'])['pressTime'].transform('min')
     dask_df['PRESS_TIME_RELATIVE'] = dask_df['pressTime'] - dask_df['SEQUENCE_START_TIME']
     dask_df['data'] = dask_df[['PRESS_TIME_RELATIVE', 'duration', 'jsKeyCode']].values.tolist()
@@ -33,7 +37,8 @@ def classification():
     print(f"output: {output}")
     res = "Pass" if output == 1.0 else "Fail"
     print(f"result: {res}")
-    return res, 200
+    resp = flask.Response(response=res, status=200)
+    return resp
 
 
 @app.route('/botclassification', methods=['POST'])
@@ -48,8 +53,9 @@ def bot_classification():
     print(f"output: {output}")
     res = "Pass" if output == 0.0 else "Fail"
     print(f"result: {res}")
-    return res, 200
+    resp = flask.Response(response=res, status=200)
+    return resp
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(debug=True, host='0.0.0.0')
