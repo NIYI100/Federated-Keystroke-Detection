@@ -46,6 +46,7 @@ RUN ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled
 
 # Configure Apache mod_raf
 #RUN echo "RPAFproxy_ips 127.0.0.1" >> /etc/apache2/mods-available/rpaf.conf
+COPY web_app/http_server/httpd.conf /usr/local/apache2/conf/httpd.conf
 
 # Set ai model
 RUN mkdir /ai_model
