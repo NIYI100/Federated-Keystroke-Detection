@@ -10,7 +10,9 @@ RUN apt-get update && \
         python3-full \
         python3.6 \
         python3-pip \
-        libomp-dev
+        libomp-dev \
+        nginx \
+        libapache2-mod-rpaf
 
 # Handle python packages globally
 RUN rm /usr/lib/python3.11/EXTERNALLY-MANAGED
@@ -35,12 +37,22 @@ COPY web_app/frontend/ /usr/local/apache2/htdocs/
 
 RUN mkdir /backend
 COPY web_app/backend/ /backend
+COPY web_app/proxy/wsgi.ini /backend/wsgi.ini
 
-# Set the working directory
-COPY model/ /backend/model
-COPY dataset/ /backend/dataset
-COPY keystroke_generator/ /backend/keystroke_generator
-COPY training_output/ /backend/training_output
+# Configure nginx
+RUN rm /etc/nginx/sites-enabled/default
+COPY web_app/proxy/nginx.conf /etc/nginx/sites-available/reverse-proxy.conf
+RUN ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled/
+
+# Configure Apache mod_raf
+#RUN echo "RPAFproxy_ips 127.0.0.1" >> /etc/apache2/mods-available/rpaf.conf
+
+# Set ai model
+RUN mkdir /ai_model
+COPY model/ /ai_model/model
+COPY dataset/ /ai_model/dataset
+COPY keystroke_generator/ /ai_model/keystroke_generator
+COPY training_output/ /ai_model/training_output
 
 ENV PYTHONPATH="/app"
 
