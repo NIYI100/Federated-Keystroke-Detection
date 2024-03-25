@@ -2,7 +2,7 @@ from flask import Flask, request
 from keystroke_generator.keystroke_generator import KeystrokeGenerator
 from utils import store_new_keystroke_series
 from model.run_network import classify_sentence
-import model.train as train
+from model.train import Trainer
 import json
 import pandas as pd
 import torch
@@ -18,12 +18,10 @@ def training():
     print(json.dumps(query_json, indent=1))
     file_location = "/ai_model/dataset/train/train.pt"
     len_new_train_set = store_new_keystroke_series(query_json, file_location)
-    if (len_new_train_set % 200) == 0:
+    if (len_new_train_set % 2) == 0:
         print("train with new dataset")
-        train.setup()
-        for epoch_idx in range(num_epochs):
-            loss_epoch = train.train_epoch(epoch_idx)
-            train.validate(epoch_idx, loss_epoch)
+        trainer = Trainer(data_folder_path="/ai_model/dataset/train/", prefix="/ai_model/training_output/")
+        trainer.train()
     resp = flask.Response(response=query_json, status=200)
     return resp
 
