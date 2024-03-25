@@ -6,7 +6,7 @@ from model.classification_network import KeystrokeClassificator
 
 model = KeystrokeClassificator()
 
-model_path = '/ai_model/training_output/20240227_140214/model_last.pth'
+model_path = '/ai_model/training_output/main_model.pth'
 model.load_state_dict(torch.load(model_path))
 
 
