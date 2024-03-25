@@ -1,8 +1,9 @@
 from flask import Flask, request
 from keystroke_generator.keystroke_generator import KeystrokeGenerator
-from utils import store_new_keystroke_series
 from model.run_network import classify_sentence
+from utils import store_new_keystroke_series
 from model.train import Trainer
+from model.classification_network import KeystrokeClassificator
 import pickle as pkl
 from model.federated_learning import get_parameters, set_parameters
 import json
@@ -22,7 +23,11 @@ def training():
     len_new_train_set = store_new_keystroke_series(query_json, file_location)
     if (len_new_train_set % 2) == 0:
         print("train with new dataset")
-        trainer = Trainer(data_folder_path="/ai_model/dataset/train/", prefix="/ai_model/training_output/")
+        # Load main model
+        main_model = KeystrokeClassificator()
+        main_model.load_from_path()
+
+        trainer = Trainer(data_folder_path="/ai_model/dataset/train/", prefix="/ai_model/training_output/", model=main_model)
         trainer.train()
     resp = flask.Response(response=query_json, status=200)
     return resp
@@ -43,7 +48,12 @@ def classification():
                                     'SEQUENCE_START_TIME', 'PRESS_TIME_RELATIVE'])
     # print(dask_df)
     tensor_input = torch.Tensor(dask_df['data']).to(dtype=torch.float)
-    output = classify_sentence(tensor_input)
+
+    # Load main model
+    main_model = KeystrokeClassificator()
+    main_model.load_from_path()
+    output = main_model.classify_sentence(tensor_input)
+
     print(f"output: {output}")
     res = "Pass" if output == 1.0 else "Fail"
     print(f"result: {res}")
@@ -59,7 +69,11 @@ def bot_classification():
     gen = KeystrokeGenerator()
     tensor_input = gen.generate_keystroke(query)
     print(f"tensor: {tensor_input}")
-    output = classify_sentence(tensor_input)
+    # Load main model
+    main_model = KeystrokeClassificator()
+    main_model.load_from_path()
+    output = main_model.classify_sentence(tensor_input)
+
     print(f"output: {output}")
     res = "Pass" if output == 0.0 else "Fail"
     print(f"result: {res}")
