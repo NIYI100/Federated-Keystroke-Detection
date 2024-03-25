@@ -51,7 +51,7 @@ COPY web_app/http_server/httpd.conf /usr/local/apache2/conf/httpd.conf
 # Set ai model
 RUN mkdir /ai_model
 COPY model/ /ai_model/model
-COPY dataset/ /ai_model/dataset
+RUN mkdir -p /ai_model/dataset/train
 COPY keystroke_generator/ /ai_model/keystroke_generator
 COPY training_output/ /ai_model/training_output
 
