@@ -1,5 +1,6 @@
 from typing import List
 
+import numpy as np
 import torch
 import torch.nn as nn
 from torch import Tensor
@@ -220,6 +221,11 @@ class Trainer:
         for epoch_idx in range(num_epochs):
             loss_epoch = self.train_epoch(epoch_idx)
             self.validate(epoch_idx, loss_epoch)
+
+
+def calculate_averages(parameters: List[List[np.ndarray]]) -> List[np.ndarray]:
+    return [np.mean(np.array([model_param[i] for model_param in parameters]), axis=0) for i in
+            range(len(parameters[0]))]
 
 
 if __name__ == "__main__":
