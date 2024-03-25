@@ -13,8 +13,10 @@ def create_dataset(result):
 
 def generate_tensor_from_series(series_json):
     dask_df = pd.DataFrame(series_json)
-    dask_df['SEQUENCE_START_TIME'] = dask_df.groupby(['testSectionId'])['pressTime'].transform('min')
+    dask_df['SEQUENCE_START_TIME'] = dask_df.groupby(['testSectionId'])['pressTime'].transform('min').astype(float)
     dask_df['PRESS_TIME_RELATIVE'] = dask_df['pressTime'] - dask_df['SEQUENCE_START_TIME']
+    dask_df['PRESS_TIME_RELATIVE'].astype(float)
+    dask_df['jsKeyCode'].astype(float)
     dask_df['data'] = dask_df[['PRESS_TIME_RELATIVE', 'duration', 'jsKeyCode']].values.tolist()
     dask_df = dask_df.drop(columns=['pressTime', 'duration', 'jsKeyCode',
                                     'SEQUENCE_START_TIME', 'PRESS_TIME_RELATIVE'])
