@@ -36,22 +36,30 @@ def load_data_sets(paths: List[str]):
 
 
 class Trainer:
-    def __init__(self, data_folder_path="./dataset/train/", prefix="./training_output/"):
+    def __init__(self, data_folder_path="./dataset/train/", prefix="./training_output/", model=None):
         # Hyper Parameter and Stuff
         self.num_epochs = 2
         self.hidden_dim = 32
         self.lr = 2e-5
         self.batch_size: int = 128
         self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        self.prefix: str = prefix + self.timestamp
+        self.root_path = prefix
+        self.prefix: str = self.root_path + self.timestamp
         self.data_folder_path = data_folder_path
 
         # setup trainings variables
-        self.model: KeystrokeClassificator
-        self.device: Device
-        self.loss_function: nn.BCELoss
-        self.optimizer: torch.optim.Adam
-        self.dataset: KeystrokeDataset
+        self.device_str: str = "cuda:0" if torch.cuda.is_available() else "cpu"
+        self.device: Device = torch.device(self.device_str)
+        self.model: KeystrokeClassificator = model
+        if model is None:
+            self.model = KeystrokeClassificator(input_dim=3, hidden_dim=self.hidden_dim, device=self.device)
+
+        self.loss_function: nn.BCELoss = nn.BCELoss()
+        self.optimizer: torch.optim.Adam = torch.optim.Adam(self.model.parameters(),
+                                                            lr=self.lr,
+                                                            betas=(0.9, 0.98),
+                                                            eps=1.0e-9)
+        self.dataset: torch.utils.data.ConcatDataset = self._load_data()
         self.train_data: Subset[KeystrokeDataset]
         self.val_data: Subset[KeystrokeDataset]
         self.best_loss = 1_000_000.
@@ -67,19 +75,6 @@ class Trainer:
 
     def setup(self):
         # Setup Network, prepare training
-        device_str = "cuda:0" if torch.cuda.is_available() else "cpu"
-        self.device = torch.device(device_str)
-        self.model = KeystrokeClassificator(input_dim=3, hidden_dim=self.hidden_dim, device=self.device)
-
-        self.loss_function = nn.BCELoss()
-
-        self.optimizer = torch.optim.Adam(self.model.parameters(),
-                                     lr=self.lr,
-                                     betas=(0.9, 0.98),
-                                     eps=1.0e-9)
-        # load dataset
-        self.dataset = self._load_data()
-
         # workaround for train_data, val_data = random_split(dataset, [0.8, 0.2])
         total_size = len(self.dataset)
         # Check if the dataset is empty
@@ -105,7 +100,7 @@ class Trainer:
             'batch_size': self.batch_size,
             'timestamp': str(self.timestamp),
             'train_batches': num_batches,
-            'device': device_str
+            'device': self.device_str
         }
 
         print(json.dumps(training_info, indent=2))
@@ -210,9 +205,26 @@ class Trainer:
 
         # Save best model
         if avg_loss < self.best_loss:
-            best_loss = avg_loss
+            self.best_loss = avg_loss
             model_path = f'{self.prefix}/model_best.pth'
             torch.save(self.model.state_dict(), model_path)
+
+    def update_overall_best_model(self):
+        def safe_new_main_model():
+            with open(f"{self.root_path}/main_model.json", "w") as f:
+                json.dump({'loss_val': self.best_loss}, f)
+            torch.save(self.model.state_dict(), f'{self.root_path}/main_model.pth')
+
+        try:
+            with open(self.root_path + 'main_model.json', 'r') as f:
+                main_loss = json.load(f)['loss_val']
+
+            if main_loss > self.best_loss:
+                print(f"found new best loss and update model !!!")
+                safe_new_main_model()
+
+        except FileNotFoundError:
+            safe_new_main_model()
 
     def train(self, num_epochs=2):
         if num_epochs is None:
@@ -221,6 +233,7 @@ class Trainer:
         for epoch_idx in range(num_epochs):
             loss_epoch = self.train_epoch(epoch_idx)
             self.validate(epoch_idx, loss_epoch)
+        self.update_overall_best_model()
 
 
 def calculate_averages(parameters: List[List[np.ndarray]]) -> List[np.ndarray]:
@@ -229,6 +242,7 @@ def calculate_averages(parameters: List[List[np.ndarray]]) -> List[np.ndarray]:
 
 
 if __name__ == "__main__":
-    trainer = Trainer(data_folder_path="/home/robert/git/Federated-Keystroke-Detection/test")
+    model = KeystrokeClassificator()
+    model.load_from_path()
+    trainer = Trainer(data_folder_path="/home/robert/git/Federated-Keystroke-Detection/test", model=model)
     trainer.train()
-
