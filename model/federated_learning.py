@@ -13,7 +13,7 @@ model.load_state_dict(torch.load(model_path))
 def set_parameters(parameters: List[np.ndarray]):
     params_dict = zip(model.state_dict().keys(), parameters)
     state_dict = OrderedDict({k: torch.Tensor(v) for k, v in params_dict})
-    model.load_state_dict(state_dict, strict=True)
+    torch.save(state_dict, model_path)
 
 
 def get_parameters() -> List[np.ndarray]:
