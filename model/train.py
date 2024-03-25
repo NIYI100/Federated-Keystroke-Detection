@@ -8,7 +8,7 @@ from torch.utils.data import random_split, Subset
 from tqdm import tqdm
 
 from model.classification_network import KeystrokeClassificator
-from dataset import KeystrokeDataset
+from model.dataset import KeystrokeDataset
 import os
 import json
 from datetime import datetime
