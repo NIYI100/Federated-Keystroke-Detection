@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 import math
+import os
 
 
 class KeystrokeClassificator(nn.Module):
@@ -33,7 +34,7 @@ class KeystrokeClassificator(nn.Module):
         preprocessed = preprocessed.to(self.device)
         time_encoded_data = self.time_encoder(preprocessed, relative_timestamps)
         cls_data = self.add_classifier_token(time_encoded_data)
-        cls_data = cls_data.unsqueeze(1) # unsqueeze data because pytorch 1.10.0 expects batched data
+        cls_data = cls_data.unsqueeze(1)  # unsqueeze data because pytorch 1.10.0 expects batched data
         embedded_data = self.encoder(cls_data)
         embedded_data = embedded_data.squeeze(1)
         cls_out = embedded_data[0]  # do the classification only on the embedded classification token
@@ -44,6 +45,19 @@ class KeystrokeClassificator(nn.Module):
         size = tensor.size(dim=1)
         app = torch.full((1, size), -1.).to(self.device)
         return torch.cat((app, tensor), dim=0)
+
+    def load_from_path(self, path=""):
+        model_path = os.path.dirname(
+            __file__) + '/../training_output/main_model.pth' if path == "" else path
+        self.load_state_dict(torch.load(model_path))
+        self.eval()
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.to(device)
+
+    def classify_sentence(self, keystroke_tensor: Tensor):
+        with torch.no_grad():
+            out = self(keystroke_tensor)
+            return torch.round(out).item()
 
 
 class TimeEncoder(nn.Module):
