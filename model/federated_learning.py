@@ -1,12 +1,14 @@
+from collections import OrderedDict
 import numpy as np
 from typing import List
 import torch
-from classification_network import KeystrokeClassificator
+from model.classification_network import KeystrokeClassificator
 
 model = KeystrokeClassificator()
 
-model_path = './training_output/20240208_094321/model_last.pth'
+model_path = '/ai_model/training_output/20240227_140214/model_last.pth'
 model.load_state_dict(torch.load(model_path))
+
 
 def set_parameters(parameters: List[np.ndarray]):
     params_dict = zip(model.state_dict().keys(), parameters)
