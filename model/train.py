@@ -89,6 +89,7 @@ class Trainer:
         val_size = total_size - train_size
 
         self.train_data, self.val_data = random_split(self.dataset, [train_size, val_size])
+        self.batch_size = len(self.train_data) if self.batch_size > len(self.train_data) else self.batch_size
         num_batches = int(len(self.train_data) / self.batch_size)
 
         # save training info
@@ -222,6 +223,6 @@ class Trainer:
 
 
 if __name__ == "__main__":
-    trainer = Trainer()
+    trainer = Trainer(data_folder_path="/home/robert/git/Federated-Keystroke-Detection/test")
     trainer.train()
 
