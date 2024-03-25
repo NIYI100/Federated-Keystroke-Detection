@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  app:
+    image: keystroke_detector
+    container_name: keystroke_detector
+    build:
+      context: ../../..
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"

@@ -21,11 +21,11 @@ RUN rm /usr/lib/python3.11/EXTERNALLY-MANAGED
 RUN pip3 install --upgrade pip
 
 # Install any python packages you need for the model
-COPY oakestra/docker/model_requirements.txt model_requirements.txt
+COPY oakestra/node/docker/model_requirements.txt model_requirements.txt
 RUN pip3 install -r model_requirements.txt
 
 # Install requirements for the backend
-COPY oakestra/docker/backend_requirements.txt backend_requirements.txt
+COPY oakestra/node/docker/backend_requirements.txt backend_requirements.txt
 RUN pip3 install -r backend_requirements.txt
 
 # Install PyTorch and torchvision
@@ -41,7 +41,8 @@ COPY web_app/proxy/wsgi.ini /backend/wsgi.ini
 
 # Configure nginx
 RUN rm /etc/nginx/sites-enabled/default
-COPY web_app/proxy/nginx.conf /etc/nginx/sites-available/reverse-proxy.conf
+COPY web_app/proxy/reverse_proxy.conf /etc/nginx/sites-available/reverse-proxy.conf
+COPY web_app/proxy/nginx.conf /etc/nginx/nginx.conf
 RUN ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled/
 
 # Configure Apache mod_raf
@@ -57,7 +58,7 @@ COPY training_output/ /ai_model/training_output
 
 ENV PYTHONPATH="/app"
 
-COPY oakestra/docker/run.sh /run.sh
+COPY oakestra/node/docker/run.sh /run.sh
 RUN chmod +x /run.sh
 
 # Start the backend

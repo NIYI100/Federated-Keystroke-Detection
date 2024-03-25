@@ -3,6 +3,8 @@ from keystroke_generator.keystroke_generator import KeystrokeGenerator
 from utils import store_new_keystroke_series
 from model.run_network import classify_sentence
 from model.train import Trainer
+import pickle as pkl
+from model.federated_learning import get_parameters, set_parameters
 import json
 import pandas as pd
 import torch
@@ -63,6 +65,20 @@ def bot_classification():
     print(f"result: {res}")
     resp = flask.Response(response=res, status=200)
     return resp
+
+
+@app.route('/getweights', methods=['GET'])
+def get_model_weights():
+    model_weights = pkl.dumps(get_parameters())
+    return flask.Response(model_weights, mimetype="application/octet-stream")
+
+
+@app.route('/setweights', methods=['POST'])
+def set_model_weights():
+    model_weights = pkl.loads(request.data)
+    print(model_weights)
+    set_parameters(model_weights)
+    return flask.Response(response="Set weights successfully", status=200)
 
 
 if __name__ == '__main__':
