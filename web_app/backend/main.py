@@ -90,7 +90,6 @@ def get_model_weights():
 @app.route('/setweights', methods=['POST'])
 def set_model_weights():
     model_weights = pkl.loads(request.data)
-    print(model_weights)
     set_parameters(model_weights)
     return flask.Response(response="Set weights successfully", status=200)
 
