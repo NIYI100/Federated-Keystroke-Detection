@@ -14,7 +14,7 @@ def main():
     session = requests.Session()
     session.trust_env = False
     model_weights_list = []
-    node_list = ["64.0.0.6"]
+    node_list = ["64.0.0.5", "64.0.0.6", "64.0.0.7"]
     while True:
         try:
             for node in node_list:
