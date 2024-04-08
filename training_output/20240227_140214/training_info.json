@@ -1,0 +1,13 @@
+{
+  "dataset": [
+    "./dataset/1_keystroke_dataset.pt",
+    "./dataset/1_bot_keystroke_dataset.pt"
+  ],
+  "Dataset size": 300000,
+  "loss_function": "BCELoss",
+  "optimizer": "Adam (\nParameter Group 0\n    amsgrad: False\n    betas: (0.9, 0.98)\n    capturable: False\n    differentiable: False\n    eps: 1e-09\n    foreach: None\n    fused: None\n    lr: 2e-05\n    maximize: False\n    weight_decay: 0\n)",
+  "batch_size": 128,
+  "timestamp": "20240227_140214",
+  "train_batches": 1875,
+  "device": "cpu"
+}
