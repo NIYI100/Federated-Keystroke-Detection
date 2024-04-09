@@ -4,6 +4,7 @@ services:
   app:
     image: keystroke_detector
     container_name: keystroke_detector
+    hostname: keystrokedetector
     build:
       context: ../../../
       dockerfile: oakestra/node/docker/Dockerfile
