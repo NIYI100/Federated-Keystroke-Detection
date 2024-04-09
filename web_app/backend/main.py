@@ -1,6 +1,5 @@
 from flask import Flask, request
 from keystroke_generator.keystroke_generator import KeystrokeGenerator
-from model.run_network import classify_sentence
 from utils import store_new_keystroke_series
 from model.train import Trainer
 from model.classification_network import KeystrokeClassificator
