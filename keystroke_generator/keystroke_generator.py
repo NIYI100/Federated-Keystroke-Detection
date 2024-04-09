@@ -3,7 +3,7 @@ import random
 import torch
 from torch import Tensor
 
-from util import vk_dict, shift_chars
+from keystroke_generator.util import vk_dict, shift_chars
 
 
 class KeystrokeGenerator:
@@ -72,6 +72,7 @@ class KeystrokeGenerator:
 
         if shift_idx != -1:
             resolve_shift()
+        print(output)
         return Tensor(output).to(dtype=torch.float)
 
     def get_random_number(self, mean: int, deviation: int, distribution: str = "normal") -> int:
