@@ -54,7 +54,8 @@ RUN mkdir /ai_model
 COPY model/ /ai_model/model
 RUN mkdir -p /ai_model/dataset/train
 COPY keystroke_generator/ /ai_model/keystroke_generator
-COPY training_output/ /ai_model/training_output
+COPY training_output/main_model.pth /ai_model/training_output/main_model.pth
+COPY training_output/main_model.json /ai_model/training_output/main_model.json
 
 ENV PYTHONPATH="/app"
 
