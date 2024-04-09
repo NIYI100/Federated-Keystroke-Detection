@@ -1,1 +1,1 @@
-{"Epoch": 0, "correct_counter": 53200, "val_accuracy": 0.8866666666666667, "false_neg": 634, "true_neg": 29302, "false_pos": 6166, "true_pos": 23898, "precision": 0.7949042043640234, "recall": 0.9741562041415295, "f1": 0.8754487508242362, "pred_true": 30064, "pred false": 29936, "loss_train": 0.3792843766291936, "loss_val": 0.2821904981038223}
+{"loss_val": 0.1368559106718749}
