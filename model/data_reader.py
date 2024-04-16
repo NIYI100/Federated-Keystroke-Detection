@@ -68,7 +68,7 @@ class KeystrokeDataReader:
 
 
 if __name__ == "__main__":
-    data_reader = KeystrokeDataReader('../../Keystrokes/files')
+    data_reader = KeystrokeDataReader('../Keystrokes/files')
     # data_reader.check_unique_sequence_participant_ids()
     data_reader.read_keystroke_data()  # '100003_keystrokes.txt'
 
