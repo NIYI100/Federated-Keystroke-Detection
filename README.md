@@ -18,12 +18,12 @@ in [main.dart](web_app/federated_keystroke_detection/lib/main.dart).
 
 ### Code
 The Application is a simple screen with a textfield and buttons for different functionalities. These are described into depth in the report. The screen itself is build
-in the 'build()' method of the 'MyHomePage' class.
+in the ``build()`` method of the ``MyHomePage`` class.
 
 The other methods are used for building the different objects (such as buttons, or textfields) or for functionalities as converting a keypress on the keyboard into a data
 keypress.
 
 ### Developement
 To change things in the code and test locally. [Flutter has to be installed](https://docs.flutter.dev/get-started/install).
-To build and host the frontend the command 'flutter build web' can be used. This builds the web app. The files can be found in [build/web](web_app/federated_keystroke_detection/build/web). This can
+To build and host the frontend the command ``flutter build web`` can be used. This builds the web app. The files can be found in [build/web](web_app/federated_keystroke_detection/build/web). This can
 then be hosted in Apache2 or similar applications.
