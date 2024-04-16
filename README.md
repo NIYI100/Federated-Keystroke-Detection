@@ -13,7 +13,9 @@ Data in the dataset has the following form:
 Please see the data directory for a few sample files.
 
 ### Data Preprocessing
-To generate the data for the federated learning, run the [model/data_reader.py](model/data_reader.py) script. This script reads the raw data from the csv files and generates the data that is used by the model. The raw files are not included in the repository, please download them and place them in [Keystrokes/files/](Keystrokes/files/) in top level of the repository. The pre-processed data is stored in the [data](data) directory.
+To generate the human data for the federated learning, run the [model/data_reader.py](model/data_reader.py) script. This script reads the raw data from the csv files and generates the data that is used by the model. The raw files are not included in the repository, please download them and place them in [Keystrokes/files/](Keystrokes/files/) in top level of the repository. The pre-processed data is stored in the [data](data) directory.
+
+To generate the bot data, run [keystroke_generator/bot_data.py](keystroke_generator/bot_data.py). The script will generate 16 dataset files with in total about 108,000,000 keystrokes to pretrain the model with. The bot datasets are also placed in the [data](data) directory.
 
 ## Web UI
 The web frontend is located in [web_app/federated_keystroke_detection](./web_app/federated_keystroke_detection). It is a flutter application. The actual code is located
