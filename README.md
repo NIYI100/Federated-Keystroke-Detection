@@ -32,3 +32,14 @@ keypress.
 To change things in the code and test locally. [Flutter has to be installed](https://docs.flutter.dev/get-started/install).
 To build and host the frontend the command ``flutter build web`` can be used. This builds the web app. The files can be found in [build/web](web_app/federated_keystroke_detection/build/web). This can
 then be hosted in Apache2 or similar applications.
+
+## Model
+Train the model by calling the [model/train.py](model/train.py) script. 
+The script will train the model on the human data and then evaluate the model on the human and bot data.
+
+## Oakestra setup
+We use Oakestra for the federated learning. To run the project on Oakestra, follow the instructions in by [oakestra](https://github.com/oakestra/oakestra).
+Stick to the official oakestra setup guide, but add our images to the config, and open port 80.
+To install the images run
+```docker pull ghcr.io/27robert99/master_node:latest```
+
