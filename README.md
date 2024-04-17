@@ -36,6 +36,7 @@ then be hosted in Apache2 or similar applications.
 ## Model
 Train the model by calling the [model/train.py](model/train.py) script. 
 The script will train the model on the human data and then evaluate the model on the human and bot data.
+Make sure that the ``data_folder_path`` is set correctly.
 
 ## Oakestra setup
 We use Oakestra for the federated learning. To run the project on Oakestra, follow the instructions in by [oakestra](https://github.com/oakestra/oakestra).
